@@ -7,20 +7,28 @@
 
 import SwiftUI
 
-
 struct SearchView: View {
-    @State var text: String = ""
+    @ObservedObject var viewModel: Presenter
     
     var body: some View {
         NavigationView {
             VStack {
                 /// 検索バー
-                SearchBar(text: $text)
+                SearchBar(text: $viewModel.text)
                 
                 /// 検索結果
                 List {
-                    ForEach(0 ..< 5) { index in
-                        ResultCell()
+                    ForEach($viewModel.repos) { repo in
+                        ResultCell(
+                            title: repo.name,
+                            description: repo.description,
+                            starCount: repo.stargazersCount
+                        )
+                        //self.title = $viewModel.repos[index].name
+                        //let description = viewModel.repos[index].description
+                        ////let language = $viewModel.repos[index].owner
+                        //let starCount = viewModel.repos[index].stargazersCount
+                        //ResultCell(title: title, description: description, starCount: starCount)
                     }
                 }
             }
@@ -32,7 +40,7 @@ struct SearchView: View {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView()
+        SearchView(viewModel: Presenter())
     }
 }
 
@@ -77,14 +85,18 @@ struct ClearButton: ViewModifier {
     }
 }
 
-
+/// 検索結果を表示するcellの定義
 struct ResultCell: View {
+    @Binding var title: String
+    @Binding var description: String?
+    @Binding var starCount: Int
+    
     var body: some View {
         VStack(alignment: .leading) {
-            Text("タイトル")
+            Text(title)
                 
             HStack {
-                Text("説明文")
+                Text(description ?? "")
                 Spacer()
                 Button(action: {
                     
@@ -93,13 +105,13 @@ struct ResultCell: View {
                 })
             }
             HStack {
-                Text("言語名")
+                Text("Swift")
                 Button(action: {
                     
                 }, label: {
                     Image(systemName: "star")
                 })
-                Text("star数")
+                Text("\(starCount)")
             }
         }
     }

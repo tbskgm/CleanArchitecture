@@ -13,7 +13,8 @@ struct FavoriteView: View {
         NavigationView {
             List {
                 ForEach(0 ..< 5) { index in
-                    ResultCell()
+                    //ResultCell()
+                    Text("おはよう")
                 }
             }
             .navigationTitle("Favorites")

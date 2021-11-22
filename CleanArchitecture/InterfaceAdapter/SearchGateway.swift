@@ -6,3 +6,19 @@
 //
 
 import Foundation
+import Combine
+
+
+protocol WebClientProtocol {
+    func getRepos() -> AnyPublisher<[Repo], Error>
+}
+
+class SearchGateway: SearchGatewayProtocol {
+    var webClient: WebClientProtocol = WebAPIClient()
+    //var database: DatabaseProtocol!
+
+
+    func fetch() -> AnyPublisher<[Repo], Error> {
+        webClient.getRepos()
+    }
+}
