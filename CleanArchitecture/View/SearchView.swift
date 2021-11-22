@@ -24,11 +24,6 @@ struct SearchView: View {
                             description: repo.description,
                             starCount: repo.stargazersCount
                         )
-                        //self.title = $viewModel.repos[index].name
-                        //let description = viewModel.repos[index].description
-                        ////let language = $viewModel.repos[index].owner
-                        //let starCount = viewModel.repos[index].stargazersCount
-                        //ResultCell(title: title, description: description, starCount: starCount)
                     }
                 }
             }
@@ -91,6 +86,8 @@ struct ResultCell: View {
     @Binding var description: String?
     @Binding var starCount: Int
     
+    @State var heartBool = false
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text(title)
@@ -99,18 +96,18 @@ struct ResultCell: View {
                 Text(description ?? "")
                 Spacer()
                 Button(action: {
-                    
                 }, label: {
-                    Image(systemName: "heart")
+                    if heartBool {
+                        Image(systemName: "heart")
+                    } else {
+                        Image(systemName: "heart.fill")
+                    }
                 })
             }
             HStack {
                 Text("Swift")
-                Button(action: {
-                    
-                }, label: {
-                    Image(systemName: "star")
-                })
+                Image(systemName: "star.fill")
+                    .padding(.leading)
                 Text("\(starCount)")
             }
         }

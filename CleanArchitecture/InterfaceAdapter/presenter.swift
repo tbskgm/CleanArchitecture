@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-// TODO: 一旦お預け。後々Presenterを準拠させる。
+// TODO: 後々Presenterを準拠させる。
 // 資料: https://zenn.dev/st43/articles/faf32d5f69e96b
 protocol PresenterInput {
     var text: String { get }
@@ -29,6 +29,8 @@ final class Presenter: ObservableObject, SearchLikesUseCaseOutput {
     
     /// 検索バーに入力された値を受け取る
     @Published var text = String()
+    
+    /// 表示するデータを保持する
     @Published var repos = [Repo]()
     
     init(useCase: SearchLikesUseCaseProtocol = SearchLikesUseCase()) {
@@ -46,13 +48,14 @@ final class Presenter: ObservableObject, SearchLikesUseCaseOutput {
                 guard !self.text.isEmpty else { return }
             }
             .sink{ _ in
-                useCase.startFetch()
-                //let keywords = self.text.split(separator: " ").map(String.init)
+                useCase.startFetch(query: self.text)
             }
             .store(in: &cancellables)
     }
     
+    /// 取得した通信データを受け取る
     ///
+    /// useCaseから呼ばれることで値を受け取る
     func getWebData(publisher: AnyPublisher<[Repo], Error>) {
         publisher
             .sink(receiveCompletion: { [weak self] completion in
@@ -63,25 +66,6 @@ final class Presenter: ObservableObject, SearchLikesUseCaseOutput {
                     self.repos = repos
                 }
             })
-        
-        
-            //.handleEvents(receiveSubscription: { [weak self] _ in
-            //    let _ = self
-            //    //self?.repos = .loading
-            //})
-            //.receive(on: DispatchQueue.main)
-            //.sink(receiveCompletion: { [weak self] completion in
-            //    switch completion {
-            //    case .failure(let error):
-            //        print("Error: \(error)")
-            //        //self?.repos = .failed(error)
-            //    case .finished:
-            //        print("Finished")
-            //    }
-            //}, receiveValue: { [weak self] repos in
-            //    guard let self = self else { return }
-            //
-            //})
             .store(in: &cancellables)
     }
 }

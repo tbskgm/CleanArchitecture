@@ -8,9 +8,9 @@
 import Foundation
 import Combine
 
-
+/// WebClientのプロトコル
 protocol WebClientProtocol {
-    func getRepos() -> AnyPublisher<[Repo], Error>
+    func getRepos(query: String) -> AnyPublisher<[Repo], Error>
 }
 
 class SearchGateway: SearchGatewayProtocol {
@@ -18,7 +18,7 @@ class SearchGateway: SearchGatewayProtocol {
     //var database: DatabaseProtocol!
 
 
-    func fetch() -> AnyPublisher<[Repo], Error> {
-        webClient.getRepos()
+    func fetch(query: String) -> AnyPublisher<[Repo], Error> {
+        webClient.getRepos(query: query)
     }
 }

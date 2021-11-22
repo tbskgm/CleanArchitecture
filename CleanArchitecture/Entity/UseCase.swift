@@ -12,7 +12,7 @@ import Combine
 protocol SearchLikesUseCaseProtocol: AnyObject {
     var output: SearchLikesUseCaseOutput! { get set }
     
-    func startFetch()
+    func startFetch(query: String)
 }
 
 protocol SearchLikesUseCaseOutput {
@@ -20,7 +20,7 @@ protocol SearchLikesUseCaseOutput {
 }
 
 protocol SearchGatewayProtocol {
-    func fetch() -> AnyPublisher<[Repo], Error>
+    func fetch(query: String) -> AnyPublisher<[Repo], Error>
 }
 
 protocol LikesGatewayProtocol {
@@ -39,8 +39,8 @@ final class SearchLikesUseCase: SearchLikesUseCaseProtocol {
     }
     
     // キーワードでリポジトリを検索し、結果とお気に入り状態を組み合わせた結果をOutputに通知する
-    func startFetch() {
-        let publisher = searchGateway.fetch()
+    func startFetch(query: String) {
+        let publisher = searchGateway.fetch(query: query)
         output.getWebData(publisher: publisher)
     }
 }
