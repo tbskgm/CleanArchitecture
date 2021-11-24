@@ -7,9 +7,9 @@
 
 import Foundation
 
-
+/*
 struct GitHubRepoStatus: Equatable {
-    let repo: GitHubRepo
+    let repo: Repo
     let isLiked: Bool
 
     static func == (lhs: GitHubRepoStatus, rhs: GitHubRepoStatus) -> Bool {
@@ -18,7 +18,7 @@ struct GitHubRepoStatus: Equatable {
 }
 
 extension Array where Element == GitHubRepoStatus {
-    init(repos: [GitHubRepo], likes: [GitHubRepo.ID: Bool]) {
+    init(repos: [Repo], likes: [Int: Bool]) {
         self = repos.map { repo in
             GitHubRepoStatus(
                 repo: repo,
@@ -27,26 +27,24 @@ extension Array where Element == GitHubRepoStatus {
         }
     }
 }
-/*
+
 struct GitHubRepoStatusList {
     enum Error: Swift.Error {
-        case notFoundRepo(ofID: GitHubRepo.ID)
+        case notFoundRepo(ofID: Int)
     }
     private(set) var statuses: [GitHubRepoStatus]
 
-    init(repos: [GitHubRepo], likes: [GitHubRepo.ID: Bool], trimmed: Bool = false) {
-        statuses = Array(repos: repos, likes: likes)
-            .unique(resolve: { _, _ in .ignoreNewOne })
+    init(repos: [Repo], likes: [Repo.ID: Bool], trimmed: Bool = false) {
+        statuses = Array(repos: repos, likes: likes).unique(resolve: { _, _ in .ignoreNewOne })
         if trimmed {
             statuses = statuses.filter{ $0.isLiked }
         }
     }
-    mutating func append(repos: [GitHubRepo], likes: [GitHubRepo.ID: Bool]) {
+    mutating func append(repos: [Repo], likes: [Int: Bool]) {
         let newStatusesMayNotUnique = statuses + Array(repos: repos, likes: likes)
-        statuses = newStatusesMayNotUnique
-                .unique { _, _ in .removeOldOne }
+        statuses = newStatusesMayNotUnique.unique { _, _ in .removeOldOne }
     }
-    mutating func set(isLiked: Bool, for id: GitHubRepo.ID) throws {
+    mutating func set(isLiked: Bool, for id: Int) throws {
         guard let index = statuses.firstIndex(where: { $0.repo.id == id }) else {
             throw Error.notFoundRepo(ofID: id)
         }
@@ -56,7 +54,7 @@ struct GitHubRepoStatusList {
             isLiked: isLiked
         )
     }
-    subscript(id: GitHubRepo.ID) -> GitHubRepoStatus? {
+    subscript(id: Int) -> GitHubRepoStatus? {
         return statuses.first(where: { $0.repo.id == id })
     }
 }

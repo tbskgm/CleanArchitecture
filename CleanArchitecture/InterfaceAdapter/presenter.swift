@@ -8,6 +8,16 @@
 import Foundation
 import Combine
 
+
+// 画面表示用のデータ
+struct ViewData: Identifiable {
+    var id: String
+    var fullName: String
+    var description: String
+    var stargazersCount: Int
+    var isLiked: Bool
+}
+
 // TODO: 後々Presenterを準拠させる。
 // 資料: https://zenn.dev/st43/articles/faf32d5f69e96b
 protocol PresenterInput {
@@ -19,10 +29,11 @@ protocol APIPresenterOutput {
 }
 
 protocol DatabasePresenterOutput {
-    
+    func toggle()
 }
 
 final class Presenter: ObservableObject, SearchLikesUseCaseOutput {
+    // MARK: 通信
     private weak var useCase: SearchLikesUseCaseProtocol!
     
     private var cancellables = Set<AnyCancellable>()
@@ -32,6 +43,11 @@ final class Presenter: ObservableObject, SearchLikesUseCaseOutput {
     
     /// 表示するデータを保持する
     @Published var repos = [Repo]()
+    
+    @Published var viewDatas = [ViewData]()
+    
+    // MARK: お気に入り
+    @Published var subject = PassthroughSubject<(isFavorite: Bool, id: String), Never>()
     
     init(useCase: SearchLikesUseCaseProtocol = SearchLikesUseCase()) {
         self.useCase = useCase
@@ -51,22 +67,37 @@ final class Presenter: ObservableObject, SearchLikesUseCaseOutput {
                 useCase.startFetch(query: self.text)
             }
             .store(in: &cancellables)
+        
+        $subject
+            .eraseToAnyPublisher()
+            .sink(receiveCompletion: { [weak self] _ in
+                guard let _ = self else { return }
+            }, receiveValue: { value in
+                
+                
+            })
+            .store(in: &cancellables)
+    }
+    
+    /// お気に入り登録する時に呼ばれる
+    func saveFavorite(id: String, isFavorite: Bool) {
+        useCase.set(id: id, isFavorite: isFavorite)
+    }
+    
+    func useCaseDidUpdateLikesList(isFavorite: Bool, id: String) {
+        for var viewData in viewDatas {
+            if viewData.id == id {
+                viewData.isLiked.toggle()
+            }
+        }
     }
     
     /// 取得した通信データを受け取る
     ///
     /// useCaseから呼ばれることで値を受け取る
-    func getWebData(publisher: AnyPublisher<[Repo], Error>) {
-        publisher
-            .sink(receiveCompletion: { [weak self] completion in
-                guard let _ = self else { return }
-            }, receiveValue: { [weak self] repos in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.repos = repos
-                }
-            })
-            .store(in: &cancellables)
+    func getWebData(datas: (viewData: [ViewData], repos: [Repo])) {
+        self.viewDatas = datas.viewData
+        self.repos = datas.repos
     }
 }
 

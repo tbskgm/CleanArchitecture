@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0567B608274BD4290014BCE0 /* UserDefaultsDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0567B607274BD4290014BCE0 /* UserDefaultsDataStore.swift */; };
 		05DD5B052743B6380001C885 /* CleanArchitectureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DD5B042743B6380001C885 /* CleanArchitectureApp.swift */; };
 		05DD5B092743B6390001C885 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 05DD5B082743B6390001C885 /* Assets.xcassets */; };
 		05DD5B0C2743B6390001C885 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 05DD5B0B2743B6390001C885 /* Preview Assets.xcassets */; };
@@ -18,7 +19,7 @@
 		05DD5B3B27467ED50001C885 /* FavoriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DD5B3A27467ED50001C885 /* FavoriteView.swift */; };
 		05DD5B3D27469EFE0001C885 /* presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DD5B3C27469EFE0001C885 /* presenter.swift */; };
 		05DD5B3F27469F110001C885 /* SearchGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DD5B3E27469F110001C885 /* SearchGateway.swift */; };
-		05DD5B4127469F200001C885 /* UserDefaultsGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DD5B4027469F200001C885 /* UserDefaultsGateway.swift */; };
+		05DD5B4127469F200001C885 /* LikesGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DD5B4027469F200001C885 /* LikesGateway.swift */; };
 		05DD5B47274730130001C885 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 05DD5B46274730130001C885 /* Alamofire */; };
 		05DD5B4927473E120001C885 /* UseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DD5B4827473E120001C885 /* UseCase.swift */; };
 		05DD5B4B274746EF0001C885 /* WebClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DD5B4A274746EF0001C885 /* WebClient.swift */; };
@@ -44,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0567B607274BD4290014BCE0 /* UserDefaultsDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsDataStore.swift; sourceTree = "<group>"; };
 		05DD5B012743B6380001C885 /* CleanArchitecture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CleanArchitecture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05DD5B042743B6380001C885 /* CleanArchitectureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanArchitectureApp.swift; sourceTree = "<group>"; };
 		05DD5B082743B6390001C885 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -58,7 +60,7 @@
 		05DD5B3A27467ED50001C885 /* FavoriteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteView.swift; sourceTree = "<group>"; };
 		05DD5B3C27469EFE0001C885 /* presenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = presenter.swift; sourceTree = "<group>"; };
 		05DD5B3E27469F110001C885 /* SearchGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchGateway.swift; sourceTree = "<group>"; };
-		05DD5B4027469F200001C885 /* UserDefaultsGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsGateway.swift; sourceTree = "<group>"; };
+		05DD5B4027469F200001C885 /* LikesGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesGateway.swift; sourceTree = "<group>"; };
 		05DD5B4827473E120001C885 /* UseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UseCase.swift; sourceTree = "<group>"; };
 		05DD5B4A274746EF0001C885 /* WebClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebClient.swift; sourceTree = "<group>"; };
 		05DD5B4C274747B10001C885 /* GithubRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubRepo.swift; sourceTree = "<group>"; };
@@ -183,7 +185,7 @@
 			children = (
 				05DD5B3C27469EFE0001C885 /* presenter.swift */,
 				05DD5B3E27469F110001C885 /* SearchGateway.swift */,
-				05DD5B4027469F200001C885 /* UserDefaultsGateway.swift */,
+				05DD5B4027469F200001C885 /* LikesGateway.swift */,
 			);
 			path = InterfaceAdapter;
 			sourceTree = "<group>";
@@ -210,6 +212,7 @@
 		05DD5B4427469F9A0001C885 /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				0567B607274BD4290014BCE0 /* UserDefaultsDataStore.swift */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -351,12 +354,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				05DD5B37274666E40001C885 /* SearchView.swift in Sources */,
+				0567B608274BD4290014BCE0 /* UserDefaultsDataStore.swift in Sources */,
 				05DD5B4927473E120001C885 /* UseCase.swift in Sources */,
 				05DD5B4D274747B10001C885 /* GithubRepo.swift in Sources */,
 				05DD5B4B274746EF0001C885 /* WebClient.swift in Sources */,
 				05DD5B3927467E660001C885 /* TabBarView.swift in Sources */,
 				05DD5B3D27469EFE0001C885 /* presenter.swift in Sources */,
-				05DD5B4127469F200001C885 /* UserDefaultsGateway.swift in Sources */,
+				05DD5B4127469F200001C885 /* LikesGateway.swift in Sources */,
 				05DD5B4F274748FD0001C885 /* GitHubRepoStatusList.swift in Sources */,
 				05DD5B3F27469F110001C885 /* SearchGateway.swift in Sources */,
 				05DD5B3B27467ED50001C885 /* FavoriteView.swift in Sources */,

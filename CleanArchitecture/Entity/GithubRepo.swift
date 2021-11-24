@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+/*
 struct GitHubRepo: Equatable, Codable {
     struct ID: RawRepresentable, Hashable, Codable {
         let rawValue: String
@@ -21,3 +21,4 @@ struct GitHubRepo: Equatable, Codable {
         return lhs.id == rhs.id
     }
 }
+*/

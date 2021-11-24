@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import Combine
 
 struct SearchView: View {
     @ObservedObject var viewModel: Presenter
+    //let subject = PassthroughSubject<Bool, Never>()
     
     var body: some View {
         NavigationView {
@@ -18,11 +20,15 @@ struct SearchView: View {
                 
                 /// 検索結果
                 List {
-                    ForEach($viewModel.repos) { repo in
+                    ForEach($viewModel.viewDatas) { viewData in
                         ResultCell(
-                            title: repo.name,
-                            description: repo.description,
-                            starCount: repo.stargazersCount
+                            id: viewData.id,
+                            title: viewData.fullName,
+                            description: viewData.description,
+                            starCount: viewData.stargazersCount,
+                            isFavorite: viewData.isLiked,
+                            //subject: viewModel.subject
+                            presenter: viewModel
                         )
                     }
                 }
@@ -80,35 +86,39 @@ struct ClearButton: ViewModifier {
     }
 }
 
+
 /// 検索結果を表示するcellの定義
 struct ResultCell: View {
+    @Binding var id: String
     @Binding var title: String
-    @Binding var description: String?
+    @Binding var description: String
     @Binding var starCount: Int
+    @Binding var isFavorite: Bool
     
-    @State var heartBool = false
+    //var subject: PassthroughSubject<Bool, Never>
+    @ObservedObject var presenter: Presenter
     
     var body: some View {
         VStack(alignment: .leading) {
             Text(title)
                 
             HStack {
-                Text(description ?? "")
+                Text(description)
+                    .foregroundColor(.gray)
                 Spacer()
                 Button(action: {
+                    //subject.send(isFavorite)
+                    presenter.saveFavorite(id: id, isFavorite: isFavorite)
+                    isFavorite.toggle()
                 }, label: {
-                    if heartBool {
-                        Image(systemName: "heart")
-                    } else {
-                        Image(systemName: "heart.fill")
-                    }
+                    isFavorite ? Image(systemName: "heart.fill"): Image(systemName: "heart")
                 })
             }
             HStack {
                 Text("Swift")
-                Image(systemName: "star.fill")
-                    .padding(.leading)
-                Text("\(starCount)")
+                    .foregroundColor(.gray)
+                Text("★ \(starCount)")
+                    .foregroundColor(.gray)
             }
         }
     }
