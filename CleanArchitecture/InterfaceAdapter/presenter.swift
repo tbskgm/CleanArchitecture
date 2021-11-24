@@ -81,13 +81,15 @@ final class Presenter: ObservableObject, SearchLikesUseCaseOutput {
     
     /// お気に入り登録する時に呼ばれる
     func saveFavorite(id: String, isFavorite: Bool) {
-        useCase.set(id: id, isFavorite: isFavorite)
+        //useCase.set(id: id, isFavorite: isFavorite)
+        useCaseDidUpdateLikesList(isFavorite: isFavorite, id: id)
     }
     
     func useCaseDidUpdateLikesList(isFavorite: Bool, id: String) {
-        for var viewData in viewDatas {
+        for viewData in viewDatas {
             if viewData.id == id {
-                viewData.isLiked.toggle()
+                //viewData.isLiked.toggle()
+                subject.send((isFavorite: !viewData.isLiked, id: id))
             }
         }
     }

@@ -74,6 +74,7 @@ final class SearchLikesUseCase: SearchLikesUseCaseProtocol {
                             )
                             viewDatas.append(viewData)
                         } else {
+                            var count = 1
                             for result in likesResult {
                                 if String(repo.id) == result.key {
                                     let viewData = ViewData(
@@ -85,14 +86,18 @@ final class SearchLikesUseCase: SearchLikesUseCaseProtocol {
                                     )
                                     viewDatas.append(viewData)
                                 } else {
-                                    let viewData = ViewData(
-                                        id: String(repo.id),
-                                        fullName: repo.name,
-                                        description: repo.description ?? "",
-                                        stargazersCount: repo.stargazersCount,
-                                        isLiked: false
-                                    )
-                                    viewDatas.append(viewData)
+                                    if count == likesResult.count {
+                                        let viewData = ViewData(
+                                            id: String(repo.id),
+                                            fullName: repo.name,
+                                            description: repo.description ?? "",
+                                            stargazersCount: repo.stargazersCount,
+                                            isLiked: false
+                                        )
+                                        viewDatas.append(viewData)
+                                    } else {
+                                        count += 1
+                                    }
                                 }
                             }
                         }
