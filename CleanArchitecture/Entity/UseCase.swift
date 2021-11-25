@@ -15,12 +15,16 @@ protocol SearchLikesUseCaseProtocol: AnyObject {
     func startFetch(query: String)
     
     func set(id: String, isFavorite: Bool)
+    
+    func allLikeData()
 }
 
 protocol SearchLikesUseCaseOutput {
-    func getWebData(datas: (viewData: [ViewData], repos: [Repo]))
+    func getWebData(datas: [ViewData])
     
     func useCaseDidUpdateLikesList(isFavorite: Bool, id: String)
+    
+    func getAllLikesData(allLike: [String: Bool])
 }
 
 protocol SearchGatewayProtocol {
@@ -31,6 +35,8 @@ protocol LikesGatewayProtocol {
     func fetch(ids: [String], completion: @escaping ([String: Bool]) -> Void)
     
     func save(liked: Bool, for id: String, completion: @escaping (Bool) -> Void)
+    
+    func allLike(completion: @escaping ([String : Bool]) -> Void)
 }
 
 /// UseCase実装
@@ -102,7 +108,7 @@ final class SearchLikesUseCase: SearchLikesUseCaseProtocol {
                             }
                         }
                     }
-                    self.output.getWebData(datas: (viewDatas, repos))
+                    self.output.getWebData(datas: viewDatas)
                 }
             })
             .store(in: &cancellables)
@@ -113,6 +119,14 @@ final class SearchLikesUseCase: SearchLikesUseCaseProtocol {
         likesGateway.save(liked: isFavorite, for: id) { [weak self] liked in
             guard let self = self else { return }
             self.output.useCaseDidUpdateLikesList(isFavorite: liked, id: id)
+        }
+    }
+    
+    /// 全てのお気に入りの値を取得する
+    func allLikeData() {
+        likesGateway.allLike() { [weak self] allLike in
+            guard let self = self else { return }
+            self.output.getAllLikesData(allLike: allLike)
         }
     }
 }

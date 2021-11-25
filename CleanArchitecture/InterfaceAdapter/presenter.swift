@@ -18,6 +18,12 @@ struct ViewData: Identifiable {
     var isLiked: Bool
 }
 
+/// お気に入り表示用データ
+struct LikesData: Identifiable {
+    var id: String
+    var isLiked: Bool
+}
+
 // TODO: 後々Presenterを準拠させる。
 // 資料: https://zenn.dev/st43/articles/faf32d5f69e96b
 protocol PresenterInput {
@@ -42,12 +48,13 @@ final class Presenter: ObservableObject, SearchLikesUseCaseOutput {
     @Published var text = String()
     
     /// 表示するデータを保持する
-    @Published var repos = [Repo]()
+    //@Published var repos = [Repo]()
     
     @Published var viewDatas = [ViewData]()
     
+    @Published var allLikeData = [LikesData]()
+    
     // MARK: お気に入り
-    @Published var subject = PassthroughSubject<(isFavorite: Bool, id: String), Never>()
     
     init(useCase: SearchLikesUseCaseProtocol = SearchLikesUseCase()) {
         self.useCase = useCase
@@ -67,29 +74,23 @@ final class Presenter: ObservableObject, SearchLikesUseCaseOutput {
                 useCase.startFetch(query: self.text)
             }
             .store(in: &cancellables)
-        
-        $subject
-            .eraseToAnyPublisher()
-            .sink(receiveCompletion: { [weak self] _ in
-                guard let _ = self else { return }
-            }, receiveValue: { value in
-                
-                
-            })
-            .store(in: &cancellables)
     }
     
     /// お気に入り登録する時に呼ばれる
     func saveFavorite(id: String, isFavorite: Bool) {
-        //useCase.set(id: id, isFavorite: isFavorite)
-        useCaseDidUpdateLikesList(isFavorite: isFavorite, id: id)
+        useCase.set(id: id, isFavorite: isFavorite)
     }
     
+    /// お気に入り登録が完了したらUIに反映させる
     func useCaseDidUpdateLikesList(isFavorite: Bool, id: String) {
+        var count = 0
         for viewData in viewDatas {
             if viewData.id == id {
-                //viewData.isLiked.toggle()
-                subject.send((isFavorite: !viewData.isLiked, id: id))
+                viewDatas[count].isLiked = isFavorite
+                // 最新のお気に入り一覧を取得する
+                fetchAllLikeData()
+            } else {
+                count += 1
             }
         }
     }
@@ -97,9 +98,22 @@ final class Presenter: ObservableObject, SearchLikesUseCaseOutput {
     /// 取得した通信データを受け取る
     ///
     /// useCaseから呼ばれることで値を受け取る
-    func getWebData(datas: (viewData: [ViewData], repos: [Repo])) {
-        self.viewDatas = datas.viewData
-        self.repos = datas.repos
+    func getWebData(datas: [ViewData]) {
+        self.viewDatas = datas
+    }
+    
+    ///　全てのお気に入りリポジトリを呼び出す
+    func fetchAllLikeData() {
+        useCase.allLikeData()
+    }
+    
+    /// 全てのお気に入りリポジトリを受け取る
+    func getAllLikesData(allLike: [String: Bool]) {
+        self.allLikeData = allLike.map({ like in
+            let likeData = LikesData(id: like.key, isLiked: like.value)
+            print(like.key, like.value)
+            return likeData
+        })
     }
 }
 

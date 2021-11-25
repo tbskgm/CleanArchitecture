@@ -9,26 +9,25 @@ import SwiftUI
 import Combine
 
 struct SearchView: View {
-    @ObservedObject var viewModel: Presenter
+    @ObservedObject var presenter: Presenter
     //let subject = PassthroughSubject<Bool, Never>()
     
     var body: some View {
         NavigationView {
             VStack {
                 /// 検索バー
-                SearchBar(text: $viewModel.text)
+                SearchBar(text: $presenter.text)
                 
                 /// 検索結果
                 List {
-                    ForEach($viewModel.viewDatas) { viewData in
+                    ForEach($presenter.viewDatas) { viewData in
                         ResultCell(
                             id: viewData.id,
                             title: viewData.fullName,
                             description: viewData.description,
                             starCount: viewData.stargazersCount,
                             isFavorite: viewData.isLiked,
-                            subject: viewModel.subject,
-                            presenter: viewModel
+                            presenter: presenter
                         )
                     }
                 }
@@ -41,7 +40,7 @@ struct SearchView: View {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView(viewModel: Presenter())
+        SearchView(presenter: Presenter())
     }
 }
 
@@ -95,14 +94,9 @@ struct ResultCell: View {
     @Binding var starCount: Int
     @Binding var isFavorite: Bool
     
-    var subject: PassthroughSubject<(isFavorite: Bool, id: String), Never>
     @ObservedObject var presenter: Presenter
     
     @State var cancellables = Set<AnyCancellable>()
-    /*
-    init(id: Binding<String>, title: Binding<String>, description: Binding<String>, starCount: Binding<Int>, isFavorite: Binding<Bool>, viewModel: ) {
-        
-    }*/
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -113,9 +107,7 @@ struct ResultCell: View {
                     .foregroundColor(.gray)
                 Spacer()
                 Button(action: {
-                    //subject.send(isFavorite)
-                    presenter.saveFavorite(id: id, isFavorite: isFavorite)
-                    //isFavorite.toggle()
+                    presenter.saveFavorite(id: id, isFavorite: !isFavorite)
                 }, label: {
                     isFavorite ? Image(systemName: "heart.fill"): Image(systemName: "heart")
                 })
@@ -126,16 +118,6 @@ struct ResultCell: View {
                 Text("★ \(starCount)")
                     .foregroundColor(.gray)
             }
-        }
-        .onAppear {
-            subject
-                .sink(receiveValue: { value in
-                    if id == value.id {
-                        isFavorite = value.isFavorite
-                        print("value: \(value)")
-                    }
-                })
-                .store(in: &self.cancellables)
         }
     }
 }

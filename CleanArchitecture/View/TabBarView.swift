@@ -10,7 +10,7 @@ import SwiftUI
 struct TabBarView: View {
     var body: some View {
         TabView{
-            SearchView(viewModel: Presenter())
+            SearchView(presenter: Presenter())
                 .tabItem {
                     Image(systemName: "magnifyingglass")
                     Text("Search")

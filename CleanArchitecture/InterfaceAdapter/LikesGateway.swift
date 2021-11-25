@@ -14,7 +14,7 @@ protocol DataStoreProtocol: AnyObject {
    
     func save(liked: Bool, for id: String, completion: @escaping (Bool) -> Void)
     
-    func allLikes(completion: @escaping ([String: Bool]) -> Void)
+    func getAllLike(completion: @escaping ([String: Bool]) -> Void)
 
     // リポジトリ情報を保存・検索する
     //func save(repos: [GitHubRepo], completion: @escaping (Result<[GitHubRepo]>) -> Void)
@@ -32,7 +32,7 @@ class LikesGateway: LikesGatewayProtocol {
         dataStore.save(liked: liked, for: id, completion: completion)
     }
 
-    func allLikes(completion: @escaping ([String : Bool]) -> Void) {
-        dataStore.allLikes(completion: completion)
+    func allLike(completion: @escaping ([String : Bool]) -> Void) {
+        dataStore.getAllLike(completion: completion)
     }
 }

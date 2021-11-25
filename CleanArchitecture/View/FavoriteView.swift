@@ -9,17 +9,23 @@ import SwiftUI
 
 
 struct FavoriteView: View {
+    @ObservedObject var presenter = Presenter()
+    
     var body: some View {
         NavigationView {
             List {
-                ForEach(0 ..< 5) { index in
-                    //ResultCell()
-                    Text("おはよう")
+                ForEach($presenter.allLikeData) { viewData in
+                    VStack {
+                        Text(viewData.id)
+                    }
                 }
             }
             .navigationTitle("Favorites")
             .navigationBarTitleDisplayMode(.inline)
         }
+        .onAppear(perform: {
+            presenter.fetchAllLikeData()
+        })
     }
 }
 
